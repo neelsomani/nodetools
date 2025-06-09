@@ -184,13 +184,13 @@ class ServiceContainer:
         if network_config.local_rpc_url:
             print(f"\nLocal node configuration:")
             print(f"Local {network_config.name} node URL: {network_config.local_rpc_url}")
-            if 'AUTO' not in os.environ:    
-                use_local = input(
+            if 'AUTO' not in os.environ:
+                use_local = (input(
                     "Do you have a local node configured? (y/n) [default=n]: "
-                ).strip() or "n"
+                ).strip() or "n") == "y"
             else:
-                use_local = os.environ.get('HAS_LOCAL_NODE', 'false').lower()
-            RuntimeConfig.HAS_LOCAL_NODE = use_local == 'true'
+                use_local = os.environ.get("HAS_LOCAL_NODE", "false").lower() == "true"
+            RuntimeConfig.HAS_LOCAL_NODE = use_local
         else:
             print(f"\nNo local node configuration available for {network_config.name}")
             RuntimeConfig.HAS_LOCAL_NODE = False
