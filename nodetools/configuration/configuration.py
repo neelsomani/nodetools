@@ -45,6 +45,8 @@ class RuntimeConfig:
     USE_OPENROUTER_AUTOROUTER: bool = True
     ENABLE_REINITIATIONS: bool = False
     DISABLE_PFT_REQUIREMENTS: bool = False
+    LOCAL_NODE_WS_URL: str = ""
+    LOCAL_NODE_RPC_URL: str = ""
 
 # Network configurations
 XRPL_MAINNET = NetworkConfig(
@@ -75,7 +77,13 @@ XRPL_TESTNET = NetworkConfig(
 
 def get_network_config() -> NetworkConfig:
     """Get current network configuration based on runtime settings"""
-    return XRPL_TESTNET if RuntimeConfig.USE_TESTNET else XRPL_MAINNET
+    config = XRPL_TESTNET if RuntimeConfig.USE_TESTNET else XRPL_MAINNET
+
+    if RuntimeConfig.HAS_LOCAL_NODE:
+        config.websockets = [RuntimeConfig.LOCAL_NODE_WS_URL]
+        config.public_rpc_url = RuntimeConfig.LOCAL_NODE_RPC_URL
+    
+    return config
 
 def get_node_config() -> NodeConfig:
     """Get current node configuration based on runtime settings"""
