@@ -189,8 +189,8 @@ class ServiceContainer:
                     "Do you have a local node configured? (y/n) [default=n]: "
                 ).strip() or "n"
             else:
-                use_local = "n"
-            RuntimeConfig.HAS_LOCAL_NODE = use_local.lower() == "y"
+                use_local = os.environ.get('HAS_LOCAL_NODE', 'false').lower()
+            RuntimeConfig.HAS_LOCAL_NODE = use_local == 'true'
         else:
             print(f"\nNo local node configuration available for {network_config.name}")
             RuntimeConfig.HAS_LOCAL_NODE = False
