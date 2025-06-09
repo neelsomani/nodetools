@@ -27,6 +27,7 @@ from ..utilities.generic_pft_utilities import GenericPFTUtilities
 from ..utilities.encryption import MessageEncryption
 from ..utilities.xrpl_monitor import XRPLWebSocketMonitor
 from ..utilities.transaction_orchestrator import TransactionOrchestrator
+from ..ai.openai_request import OpenAIRequestTool
 
 @dataclass
 class ServiceContainer:
@@ -83,7 +84,7 @@ class ServiceContainer:
             raise
 
         try:
-            # Retreive network, node, and runtime configurations
+            # Retrieve network, node, and runtime configurations
             network_config = get_network_config()
             node_config = get_node_config()
 
@@ -121,18 +122,7 @@ class ServiceContainer:
                 transaction_repository=transaction_repository,
             )
 
-            transaction_orchestrator = TransactionOrchestrator(
-                node_config=node_config,
-                network_config=network_config,
-                business_logic_provider=business_logic,
-                generic_pft_utilities=pft_utilities, 
-                transaction_repository=transaction_repository,
-                credential_manager=credential_manager,
-                message_encryption=message_encryption,
-                openrouter=openrouter,
-                xrpl_monitor=xrpl_monitor,
-                notifications=notifications
-            )
+            openai_tool = OpenAIRequestTool(credential_manager=credential_manager, db_connection_manager=db_connection_manager)
 
             # Create core dependencies container
             deps = Dependencies(
@@ -143,6 +133,15 @@ class ServiceContainer:
                 openrouter=openrouter,
                 transaction_repository=transaction_repository,
                 message_encryption=message_encryption,
+                openai=openai_tool
+            )
+
+            # Initialize transaction orchestrator with the dependencies object
+            transaction_orchestrator = TransactionOrchestrator(
+                dependencies=deps,
+                business_logic_provider=business_logic,
+                xrpl_monitor=xrpl_monitor,
+                notifications=notifications
             )
 
             logger.info("All NodeTools services initialized")

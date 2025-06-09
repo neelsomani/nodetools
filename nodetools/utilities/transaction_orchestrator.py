@@ -745,38 +745,23 @@ class TransactionOrchestrator:
     """
     def __init__(
             self,
-            node_config: NodeConfig,
-            network_config: NetworkConfig,
+            dependencies: Dependencies,
             business_logic_provider: BusinessLogicProvider,
-            generic_pft_utilities: GenericPFTUtilities, 
-            transaction_repository: TransactionRepository,
-            credential_manager: CredentialManager,
-            message_encryption: MessageEncryption,
-            openrouter: OpenRouterTool,
             xrpl_monitor: XRPLWebSocketMonitor,
             notifications: bool = False
     ):
         self.business_logic_provider = business_logic_provider
         self.xrpl_monitor = xrpl_monitor
-
-        # Maintain a dependency object to pass around dependencies
-        self.dependencies = Dependencies(
-            node_config=node_config,
-            network_config=network_config,
-            generic_pft_utilities=generic_pft_utilities,
-            transaction_repository=transaction_repository,
-            credential_manager=credential_manager,
-            message_encryption=message_encryption,
-            openrouter=openrouter
-        )
+        self.dependencies = dependencies
 
         # Also maintain direct references to the dependencies
-        self.generic_pft_utilities = generic_pft_utilities
-        self.transaction_repository = transaction_repository
-        self.credential_manager = credential_manager
-        self.message_encryption = message_encryption
-        self.node_config = node_config
-        self.openrouter = openrouter
+        self.generic_pft_utilities = dependencies.generic_pft_utilities
+        self.transaction_repository = dependencies.transaction_repository
+        self.credential_manager = dependencies.credential_manager
+        self.message_encryption = dependencies.message_encryption
+        self.node_config = dependencies.node_config
+        self.openrouter = dependencies.openrouter
+        self.openai = dependencies.openai
 
         # Initialize queues and managers
         self.review_queue = asyncio.Queue()     # Queue for transactions needing review

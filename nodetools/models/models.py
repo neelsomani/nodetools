@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from nodetools.protocols.encryption import MessageEncryption
     from nodetools.protocols.db_manager import DBConnectionManager
     from nodetools.configuration.configuration import NodeConfig, NetworkConfig
+    from nodetools.protocols.openai_request import OpenAIRequestTool
 
 class InteractionType(Enum):
     REQUEST = "request"
@@ -37,6 +38,7 @@ class Dependencies:
     openrouter: 'OpenRouterTool'
     transaction_repository: 'TransactionRepository'
     message_encryption: 'MessageEncryption'
+    openai: 'OpenAIRequestTool'
 
 @dataclass
 class MemoStructure:
