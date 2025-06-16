@@ -75,7 +75,13 @@ XRPL_TESTNET = NetworkConfig(
 
 def get_network_config() -> NetworkConfig:
     """Get current network configuration based on runtime settings"""
-    return XRPL_TESTNET if RuntimeConfig.USE_TESTNET else XRPL_MAINNET
+    config = XRPL_TESTNET if RuntimeConfig.USE_TESTNET else XRPL_MAINNET
+    
+    # Add local WebSocket URL if using local node
+    if RuntimeConfig.HAS_LOCAL_NODE:
+        config.websockets.insert(0, "ws://127.0.0.1:6006")
+    
+    return config
 
 def get_node_config() -> NodeConfig:
     """Get current node configuration based on runtime settings"""
